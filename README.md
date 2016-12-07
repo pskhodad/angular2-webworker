@@ -1,4 +1,4 @@
-## Using your module in an Angular 2 / Ionic 2 app
+## Using WebWorkerModule and WebWorkerProvider in an Angular 2 / Ionic 2 app
 
 ## Importing Module 
 ```typescript
