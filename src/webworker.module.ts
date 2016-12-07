@@ -1,13 +1,15 @@
 import { Observable } from 'rxjs';
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { WebWorkerProvider, WorkerScriptToken, setupWebWorker } from './providers/webworker.provider';
+import { DEFAULT_WORKERSCRIPT_NAME, WebWorkerProvider, WorkerScriptToken, setupWebWorker } from './providers/webworker.provider';
 
 @NgModule({})
 export class WebWorkerModule {
 
-    static forRoot(workerscript: string): ModuleWithProviders {
+    static forRoot(workerscript?: string): ModuleWithProviders {
         
-        console.log(workerscript);
+        if (!workerscript) {
+          workerscript = DEFAULT_WORKERSCRIPT_NAME;
+        }
 
         return {
             ngModule: WebWorkerModule,

@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
-import { WebWorkerProvider, WorkerScriptToken, setupWebWorker } from './providers/webworker.provider';
+import { DEFAULT_WORKERSCRIPT_NAME, WebWorkerProvider, WorkerScriptToken, setupWebWorker } from './providers/webworker.provider';
 export var WebWorkerModule = (function () {
     function WebWorkerModule() {
     }
     WebWorkerModule.forRoot = function (workerscript) {
-        console.log(workerscript);
+        if (!workerscript) {
+            workerscript = DEFAULT_WORKERSCRIPT_NAME;
+        }
         return {
             ngModule: WebWorkerModule,
             providers: [
