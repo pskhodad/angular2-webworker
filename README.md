@@ -1,5 +1,54 @@
 ## Using WebWorkerModule and WebWorkerProvider in an Angular 2 / Ionic 2 app
 
+## Preparing webworker to work with WebWorkerProvider
+
+Add following snippet to your webworker.
+You need to provide list of methods to run in webworker thread.
+
+```typescript
+
+function portListener(port, methods) {
+  port.addEventListener('message', event => {
+    const {portCallerMessageId, method, args} = event.data;
+
+    if (!method) return;
+
+    // just a "send"
+    if (!portCallerMessageId) {
+      methods[method](...args);
+      return;
+    }
+
+    const source = event.source || port;
+
+    // It wants a response too
+    new Promise(resolve => resolve(methods[method](...args))).then(value => {
+      source.postMessage({
+        portCallerResponseId: portCallerMessageId,
+        value
+      });
+    }, err => {
+      source.postMessage({
+        portCallerResponseId: portCallerMessageId,
+        error: err.message
+      });
+    });
+  });
+
+  if (port.start) port.start();
+}
+
+// Provide methods to run in webworker thread.
+// Picked from gist by Jake Archibald, https://gist.github.com/jakearchibald/7d3d0575afc24a1176fd56f522c593ec
+portListener(self, {
+  slowRandomNumber() {
+    return new Promise(r => setTimeout(r, 3000))
+      .then(() => Math.random());
+  }
+});
+
+```
+
 ## Importing Module 
 ```typescript
 
