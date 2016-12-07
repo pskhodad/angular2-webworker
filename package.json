@@ -1,7 +1,7 @@
 {
-  "name": "ionic-module-template",
-  "version": "0.0.12",
-  "description": "A template for creating reusable module for Angular 2 and Ionic 2",
+  "name": "angular2-webworker",
+  "version": "1.0.7",
+  "description": "Module and provider to use alongside Angular2/Ionic2 apps",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/driftyco/ionic-module-template.git"
+    "url": "git+https://github.com/pskhodad/angular2-webworker.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/driftyco/ionic-module-template/issues"
+    "url": "https://github.com/pskhodad/angular2-webworker/issues"
   },
-  "homepage": "https://github.com/driftyco/ionic-module-template#readme",
+  "homepage": "https://github.com/pskhodad/angular2-webworker#readme",
   "devDependencies": {
     "@angular/common": "^2.1.1",
     "@angular/compiler": "^2.1.1",

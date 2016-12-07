@@ -1,6 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { MyComponent } from './components/my-component';
+import { NgModule } from '@angular/core';
 import { WebWorkerProvider, WorkerScriptToken, setupWebWorker } from './providers/webworker.provider';
 export var WebWorkerModule = (function () {
     function WebWorkerModule() {
@@ -16,20 +14,7 @@ export var WebWorkerModule = (function () {
         };
     };
     WebWorkerModule.decorators = [
-        { type: NgModule, args: [{
-                    declarations: [
-                        MyComponent
-                    ],
-                    exports: [
-                        MyComponent
-                    ],
-                    imports: [
-                        BrowserModule
-                    ],
-                    schemas: [
-                        CUSTOM_ELEMENTS_SCHEMA
-                    ]
-                },] },
+        { type: NgModule, args: [{},] },
     ];
     /** @nocollapse */
     WebWorkerModule.ctorParameters = [];
