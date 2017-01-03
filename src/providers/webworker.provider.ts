@@ -1,65 +1,61 @@
 import { Injectable, OpaqueToken, Optional } from '@angular/core';
 
-export const WorkerScriptToken = new OpaqueToken('WORKERSCRIPT');
-export const DEFAULT_WORKERSCRIPT_NAME: string = "worker.js";
+export const WebWorkerToken = new OpaqueToken('WEBWORKER');
+
+function parseJsonSafely(str) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+}
 
 @Injectable()
 export class WebWorkerProvider {
+  private _callbacks: any = {};
+  private messageIds: number = 0;
   
-  port: any;
-  _pendingRequests: any;
-  workerscript: string;
-
-  constructor(workerscript: string) {
-
-    this.port = new Worker(workerscript);
-
-    // worker jobs awaiting response {callId: [resolve, reject]}
-    this._pendingRequests = {};
-
-    this.port.addEventListener('message', event => {
-      const {portCallerResponseId, value, error} = event.data;
-
-      if (!portCallerResponseId) return;
-
-      const [resolve, reject] = this._pendingRequests[portCallerResponseId];
-      delete this._pendingRequests[portCallerResponseId];
-
-      if (error) {
-        reject(new Error(error));
-        return;
-      }
-
-      resolve(value);
-    });
-
-    if (this.port.start) this.port.start();
-
-  }
-
-  send(method, ...args) {
-    this.port.postMessage({
-      method,
-      args
+  constructor(public worker: any) {
+    worker.addEventListener('message', (e) => {
+      this.onMessage(worker, e);
     });
   }
-  call(method, ...args) {
+
+  private onMessage(self: any, e: any) {
+    var message = parseJsonSafely(e.data);
+    if (!message) {
+      return;
+    }
+    var messageId = message[0];
+    var error = message[1];
+    var result = message[2];
+    var callback = this._callbacks[messageId];        
+
+    if (!callback) {
+      return;
+    }
+
+    delete this._callbacks[messageId];
+    callback(error, result);
+  }
+
+  postMessage(userMessage: any) {
+    let messageId = this.messageIds;
+    let messageToSend = [messageId, userMessage];
     return new Promise((resolve, reject) => {
-      const portCallerMessageId = Math.random();
-      this._pendingRequests[portCallerMessageId] = [resolve, reject];
-
-      this.port.postMessage({
-        method,
-        args,
-        portCallerMessageId
-      });
-    });
+      this._callbacks[messageId] = (error, result) => {
+        if (error) {
+          return reject(new Error(error.message));
+        }
+        resolve(result);
+      }
+      var jsonMessage = JSON.stringify(messageToSend);
+      this.worker.postMessage(jsonMessage);
+    });    
   }
 
 }
 
-export function setupWebWorker(workerscript: string) {
-      
-      const ww = new WebWorkerProvider(workerscript);
-      return ww;
+export function setupWebWorker(worker: Worker): WebWorkerProvider {
+  return new WebWorkerProvider(worker);
 }

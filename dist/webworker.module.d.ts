@@ -1,4 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
+export interface WebWorkerModuleConfig {
+    worker: any;
+}
 export declare class WebWorkerModule {
-    static forRoot(workerscript?: string): ModuleWithProviders;
+    static forRoot(config: WebWorkerModuleConfig): ModuleWithProviders;
 }

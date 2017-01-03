@@ -1,17 +1,14 @@
 import { NgModule } from '@angular/core';
-import { DEFAULT_WORKERSCRIPT_NAME, WebWorkerProvider, WorkerScriptToken, setupWebWorker } from './providers/webworker.provider';
+import { WebWorkerProvider, WebWorkerToken, setupWebWorker } from './providers/webworker.provider';
 export var WebWorkerModule = (function () {
     function WebWorkerModule() {
     }
-    WebWorkerModule.forRoot = function (workerscript) {
-        if (!workerscript) {
-            workerscript = DEFAULT_WORKERSCRIPT_NAME;
-        }
+    WebWorkerModule.forRoot = function (config) {
         return {
             ngModule: WebWorkerModule,
             providers: [
-                { provide: WorkerScriptToken, useValue: workerscript },
-                { provide: WebWorkerProvider, useFactory: setupWebWorker, deps: [WorkerScriptToken] }
+                { provide: WebWorkerToken, useValue: config.worker },
+                { provide: WebWorkerProvider, useFactory: setupWebWorker, deps: [WebWorkerToken] }
             ]
         };
     };
@@ -19,7 +16,7 @@ export var WebWorkerModule = (function () {
         { type: NgModule, args: [{},] },
     ];
     /** @nocollapse */
-    WebWorkerModule.ctorParameters = [];
+    WebWorkerModule.ctorParameters = function () { return []; };
     return WebWorkerModule;
 }());
 //# sourceMappingURL=webworker.module.js.map
